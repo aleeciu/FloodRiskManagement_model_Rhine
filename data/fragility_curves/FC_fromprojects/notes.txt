@@ -1,0 +1,2 @@
+It looks like BOAs curve VAKIDs do not have a good correspondence with the provided shapefile. 
+As a consequence, many strecthes end up with no curve assigned. Most of the latter right bank of the Waal is uncovered.

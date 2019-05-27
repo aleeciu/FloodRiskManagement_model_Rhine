@@ -1,0 +1,2 @@
+location 42_5_DE should be dropped (not in the old report where failure probabilities are stated but only in the new one)
+location 48_1_b is not in VNK and not in the old report, it is though very closer to spijk and that is why it got the same pf
