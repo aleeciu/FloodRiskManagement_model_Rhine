@@ -1,2 +1,0 @@
-brescode determines the dike raising costs. From upstream up to herwen, 
-they all got the same cost function based on herwen)

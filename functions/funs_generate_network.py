@@ -21,7 +21,7 @@ def get_network(Musk_params=True, fragcurves=True, Losses=True):
                                    'prec_node': str,
                                    'subs_node1': str,
                                    'subs_node2': str,
-                                   'Brescode': int})
+                                   'Brescode': int}, index_col=0)
     df = df.set_index('NodeName')
 
     nodes = df.to_dict('index')
@@ -48,7 +48,7 @@ def get_network(Musk_params=True, fragcurves=True, Losses=True):
     if fragcurves:
         cal_factors = pd.read_excel(
             './data/fragility_curves/calibration/FC_calfactors_VNK_3000_ISTrue.xlsx',
-            converters={'NodeName': str})
+            converters={'NodeName': str}, index_col=0)
         cal_factors = cal_factors.set_index('NodeName')
 
     # Upload rfr:
@@ -63,12 +63,8 @@ def get_network(Musk_params=True, fragcurves=True, Losses=True):
 
     # Upload diversion policies:
     G.add_node('Diversion', **pd.read_excel(
-        './data/measures/diversion_policies.xlsx').to_dict())
+        './data/measures/diversion_policies.xlsx', index_col=0).to_dict())
     G.node['Diversion']['type'] = 'measure'
-
-    # Upload diversion evacuation policies:
-#    G.add_node('EWS', **pd.read_excel('./data/measures/EWS.xlsx').to_dict())
-#    G.node['EWS']['type'] = 'measure'
 
     areas_to_rings = dict(zip(range(6), (['38', '24', '41', '42_nl'], ['43', '16'],
                                          ['15', '45', '44'],
@@ -122,7 +118,7 @@ def get_network(Musk_params=True, fragcurves=True, Losses=True):
     # Plauisble wave-shapes for the most upstream location - from GRADE data
     upstream_node = df[df['type'] == 'upstream'].index.values[0]
     G.node[upstream_node]['Qevents_shape'] = pd.read_excel(
-        './data/hydraulics/wave_shapes.xls')  # .to_dict('index')
+        './data/hydraulics/wave_shapes.xls', index_col=0)  # .to_dict('index')
 
     # Branch aggregation criteria:
 #    agg_branches = ['BR+Waal', 'BR+Waal', 'PK+Lek', 'PK+Lek', 'IJssel']

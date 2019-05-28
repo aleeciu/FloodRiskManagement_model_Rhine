@@ -1,1 +1,0 @@
-rating curve interpolated between the two limbs and linearly extrapolated further

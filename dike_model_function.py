@@ -15,12 +15,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
-
 def Muskingum(C1, C2, C3, Qn0_t1, Qn0_t0, Qn1_t0):
     Qn1_t1 = C1 * Qn0_t1 + C2 * Qn0_t0 + C3 * Qn1_t0
 
     return Qn1_t1
-
 
 class DikeNetwork(object):
     def __init__(self):
@@ -37,10 +35,11 @@ class DikeNetwork(object):
         # # of events:
         n = 10
         R0 = pd.read_excel(
-            './data/pre_policies/zero_pol_wSB_n200_r35_{}.xlsx'.format(n))
+            './data/pre_policies/zero_pol_wSB_n200_r35_{}.xlsx'.format(n), idnex_col=0)
         
         # maximum damage per dikering:
-        maximaals = pd.read_excel('./data/damages/max_damages_dikerings.xlsx')
+        maximaals = pd.read_excel('./data/damages/max_damages_dikerings.xlsx',
+                                  index_col=0)
         
         # Load hydrologic statistic
         A = pd.read_excel('./data/hydraulics/werklijn_params.xlsx')
@@ -51,7 +50,7 @@ class DikeNetwork(object):
 
 #        sample_probs = np.random.uniform(1-1/125.0, 1-1/12500.0, n)
 #        Qpeak = np.unique(werklijn_inv(sample_probs, A))[::-1]
-#        np.savetxt('./data/events/{}sampled_Qpeaks_125_12500.txt'.format(n), Qpeak)
+#        np.savetxt('./data/events/_{}_sampled_Qpeaks_125_12500.txt'.format(n), Qpeak)
 
 #        Qpeak = np.unique(np.loadtxt(
 #                './preprocessing/10uniform_sampled_Qpeaks_125_12500.txt'))[::-1]
@@ -80,7 +79,7 @@ class DikeNetwork(object):
         self.step = 10  # dike increase step [cm]
 
         # Time step correction: Q is a mean daily value expressed in m3/s
-        self.timestepcorr = 24 * 60 * 60
+        self.timestepcorr = 24*60*60
 
     def _initialize_hydroloads(self, node, time, Q_0):
         node['cumVol'], node['wl'], node['Qpol'], node['hbas'] = (
@@ -165,10 +164,10 @@ class DikeNetwork(object):
         area_output = {'{}_{}'.format(a, key): [] for key in [
                        'Damage', 'Deaths', 'EAD', 'Dike Inv Cost'] for a in range(6)}
 
-        # Possible extra outputs of interest:
+#        # Possible extra outputs of interest:
 #        extra_output_list = ['Qpol', 'Qout', 'Qin', 'wl', 'status', 'critWL']
 #        # Selected extra outputs of interest
-#        eooi = [3]
+#        eooi = []
 #        for k in eooi:
 #            extra_output = {'{}_{}'.format(extra_output_list[k],
 #                                            dike): [] for dike in dikenodes}
@@ -408,15 +407,6 @@ class DikeNetwork(object):
             _damage = np.reshape(
                 area_output['{}_Damage'.format(area)], self.p_exc.shape)
             
-            ## Doing this doesnt make much sense, as you may have 
-            ## ead (area under curve) > max risk
-            
-#            _risks = _damage*self.p_exc
-#            
-#            area_output['{}_minR'.format(area)] = np.min(_risks)
-#            
-#            area_output['{}_maxR'.format(area)] = np.max(_risks)  
-            
             EAD = np.trapz(_damage, self.p_exc)
             # Discounted annual risk per dike ring:
             area_output['{}_EAD'.format(area)] = np.sum(discount(EAD,
@@ -427,10 +417,3 @@ class DikeNetwork(object):
         area_output.update({'RfR Total Costs': G.node['rfr']['totcost']})
 
         return area_output
-
-
-
-
-
-
-

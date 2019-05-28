@@ -24,11 +24,10 @@ def build_Pol(df, pf):
         policies.append(Policy(name=name, **decision))
     return policies
 
-
 if __name__ == '__main__':
     ema_logging.log_to_stderr(ema_logging.INFO)
 
-    pf = '2a'
+    pf = 0
 
     dike_model = get_model_for_problem_formulation(pf)[0]
         
@@ -86,41 +85,41 @@ if __name__ == '__main__':
 #    n_policies = 1000
 
 # pf1
-    df = pd.read_excel('./results/2nd paper/1bn_nl/PF1.xlsx'
-                       )[[l.name for l in dike_model.levers]]
-    policies = build_Pol(df, 'pf1')
+#    df = pd.read_excel('{}/FRM_model_Rhine_RESULTS/2nd paper/1bn_nl/PF1.xlsx'.format(folder)
+#                       )[[l.name for l in dike_model.levers]]
+#    policies = build_Pol(df, 'pf1')
 
 ## pf1c
-    df = pd.read_excel('./results/2nd paper/1bn_nl/PF1b.xlsx'
-                       )[[l.name for l in dike_model.levers]]
-    policies.extend(build_Pol(df, 'pf1c'))
-### zero policy
+#    df = pd.read_excel('{}/FRM_model_Rhine_RESULTS/2nd paper/1bn_nl/PF1b.xlsx'.format(folder)
+#                       )[[l.name for l in dike_model.levers]]
+#    policies.extend(build_Pol(df, 'pf1c'))
+#### zero policy
 #    policies.extend(build_Pol(df.iloc[[0]]*0, '0'))
-#
-## pf2
-    df = pd.read_excel('./results/2nd paper/1bn_nl/PF2.xlsx'
-                       )[[l.name for l in dike_model.levers]]
-    policies.extend(build_Pol(df, 'pf2'))
-## pf2a
-    df = pd.read_excel('./results/2nd paper/1bn_nl/PF2a.xlsx'
-                       )[[l.name for l in dike_model.levers]]
-    policies.extend(build_Pol(df, 'pf2a'))  
+##
+### pf2
+#    df = pd.read_excel('{}/FRM_model_Rhine_RESULTS/2nd paper/1bn_nl/PF2.xlsx'.format(folder)
+#                       )[[l.name for l in dike_model.levers]]
+#    policies.extend(build_Pol(df, 'pf2'))
+### pf2a
+#    df = pd.read_excel('{}/FRM_model_Rhine_RESULTS/2nd paper/1bn_nl/PF2a.xlsx'.format(folder)
+#                       )[[l.name for l in dike_model.levers]]
+#    policies.extend(build_Pol(df, 'pf2a'))
 
 ## SIMULATION:
-## single run
-#    start = time.time()
-#    dike_model.run_model(ref_scenario, policy0)
-#    end = time.time() - start
-#    print(end)
-#    results = dike_model.outcomes_output
+# single run
+    start = time.time()
+    dike_model.run_model(ref_scenario, policy0)
+    end = time.time() - start
+    print(end)
+    results = dike_model.outcomes_output
 
 ##     series run
 #    with SequentialEvaluator(dike_model) as evaluator:
 #        results = evaluator.perform_experiments(ref_scenario, policies)
 
 # multiprocessing
-    with MultiprocessingEvaluator(dike_model, n_processes = 3) as evaluator:
-        results = evaluator.perform_experiments(ref_scenario, policies)
+#    with MultiprocessingEvaluator(dike_model, n_processes = 3) as evaluator:
+#        results = evaluator.perform_experiments(ref_scenario, policies)
 ###
 #### save results
 #    with open("./results//FirstDecentResults/simulation_noncooppolsx100.p".format(pf), "wb") as f:

@@ -1,3 +1,0 @@
-The FC estimated with 1000 sample number is too small and has not converged yet.
-
-2000 does

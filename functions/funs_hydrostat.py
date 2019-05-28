@@ -7,9 +7,7 @@ Created on Sun Oct 29 15:55:19 2017
 import random
 import numpy as np
 
-# werklijn function: step-wise distribution of high discharges:
-
-
+# werklijn function: step-wise distribution of high discharges.
 def werklijn_cdf(Xlist, A):
 
     X = np.asarray(Xlist)
@@ -51,8 +49,9 @@ def werklijn_inv(Plist, A):
     # this is where you actually extrapolate way beyond the third connecting
     # point
     A['RP'].loc[nl + 1] = np.inf
-    RPL = A['RP'].values     # limits of piece-wise relation
-# transform probability of non-exceedance frequency of exceedance
+    RPL = A['RP'].values    # limits of piece-wise relation
+                            # transform probability of non-exceedance
+                            # frequency of exceedance
     Fe = -np.log(P)
     RP = 1 / Fe    # return period
 
@@ -65,7 +64,6 @@ def werklijn_inv(Plist, A):
         X[index] = a[j] * np.log(RP[index]) + b[j]
 
     return X
-
 
 def werklijn_pdf(Xlist, A):
     # pdf according to "werklijn"
@@ -100,8 +98,27 @@ def werklijn_pdf(Xlist, A):
     return P
 
 # randomly sample from werklijn
-
-
 def rand_werklijn(A):  # compute x = inverseFx(Xu)
     u = random.random()     # compute Xu
     return werklijn_inv([u], A)  # return inverseFx(Xu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
