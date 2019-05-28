@@ -10,7 +10,7 @@ from ema_workbench import (MultiprocessingEvaluator, ema_logging,
 
 from ema_workbench.em_framework.optimization import EpsilonProgress, HyperVolume
 import matplotlib.pyplot as plt
-from problem_formulation import get_model_for_problem_formulation
+from problem_formulation_4 import get_model_for_problem_formulation
 
 import time
 
@@ -18,7 +18,7 @@ import time
 if __name__ == '__main__':
     ema_logging.log_to_stderr(ema_logging.INFO)
 
-    pf = '2a'
+    pf = 1
 
     problem = get_model_for_problem_formulation(pf)
 
@@ -36,32 +36,32 @@ if __name__ == '__main__':
 
     ref_scenario = Scenario('reference', **scen1)
 
-    nfe = 200000
+    nfe = 100
 
     convergence_metrics = [HyperVolume(minimum=mins, maximum=maxs),
                            EpsilonProgress()]
-    # OPTIMIZATION:
-#    with SequentialEvaluator(dike_model) as evaluator:
-#        results, convergence = evaluator.optimize(nfe = nfe,
-#                                                 searchover = 'levers',
-#                                                 epsilons = epsilons,
-#                                                 constraints = constraints,
-#                                                 convergence = convergence_metrics,
-#                                                 reference = ref_scenario
-#                                                 )
+    ## OPTIMIZATION:
+    with SequentialEvaluator(dike_model) as evaluator:
+        results, convergence = evaluator.optimize(nfe = nfe,
+                                                 searchover = 'levers',
+                                                 epsilons = epsilons,
+                                                 constraints = constraints,
+                                                 convergence = convergence_metrics,
+                                                 reference = ref_scenario
+                                                 )
 
-    start = time.time()
-    with MultiprocessingEvaluator(dike_model, n_processes = 23) as evaluator:
-         results, convergence = evaluator.optimize(
-             nfe=nfe,
-             searchover='levers',
-             epsilons=epsilons,
-             constraints=constraints,
-             convergence=convergence_metrics,
-             reference=ref_scenario
-         )
-    end = time.time() - start
-    print(end)
+#    start = time.time()
+#    with MultiprocessingEvaluator(dike_model, n_processes = 3) as evaluator:
+#         results, convergence = evaluator.optimize(
+#             nfe=nfe,
+#             searchover='levers',
+#             epsilons=epsilons,
+#             constraints=constraints,
+#             convergence=convergence_metrics,
+#             reference=ref_scenario
+#         )
+#    end = time.time() - start
+#    print(end)
 
     results.to_excel("./results/results_pf{}_{}nfe.xlsx".format(pf, nfe))
     convergence.to_excel("./results//convergence_pf{}_{}nfe.xlsx".format(pf, nfe))

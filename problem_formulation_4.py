@@ -104,7 +104,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
     nl_areas = list(range(4))
     de_areas = [4, 5]
 
-    nl_max_costs = 2 * 1e8
+#    nl_max_costs = 2 * 1e8
 
     risk_keys = {0: 'minR', 1: 'EAD', 2: 'maxR'}
     ri = risk_keys[1] # risk indicator
@@ -152,7 +152,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_nl',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e7)
+        epsilons.append(1e9)
 
         variable_name = []
         for e in ['{}'.format(ri), 'Dike Inv Cost']:
@@ -161,10 +161,10 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_de',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e7)
+        epsilons.append(1e8)
 
         mins = [0.0] * 2
-        maxs = [1.88 * 1e10, 1.71 * 1e9]
+        maxs = [1.9 * 1e10, 2.16 * 1e9]
 
         dike_model.outcomes = outcomes
 
@@ -193,7 +193,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_nl',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e8)
+        epsilons.append(1e9)
 
         variable_name = []
         for e in ['{}'.format(ri), 'Dike Inv Cost']:
@@ -250,7 +250,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         epsilons.extend([0.05] * 5)
 
         mins = [0.0] * 7
-        maxs = [1.88 * 1e10, 1.71 * 1e9] + 5 * [0.708]  # 1/np.sqrt(2)
+        maxs = [1.9 * 1e10, 2.16 * 1e9] + 2 * [0.708]  # 1/np.sqrt(2)
 
         dike_model.outcomes = outcomes
 
@@ -304,7 +304,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         epsilons.extend([0.05] * 5)
 
         mins = [0.0] * 7
-        maxs = [1.88 * 1e10, 1.71 * 1e9] + 5 * [0.708]  # 1/np.sqrt(2)
+        maxs = [1.9 * 1e10, 2.16 * 1e9] + 5 * [0.708]  # 1/np.sqrt(2)
 
         dike_model.outcomes = outcomes
 

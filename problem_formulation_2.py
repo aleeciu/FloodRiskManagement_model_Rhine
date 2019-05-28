@@ -65,7 +65,10 @@ def absolute_risk_shift_distance(init_risk, *args):
     distance = abs(r1 - r2) / np.sqrt(2)
 
     return distance
-
+    
+# Note on upperlim (maxs) of the risk tranfers criteria:
+# no risk increase is allowed => 0<r<1 (i.e. when no risk reduction, r=0; when
+# total risk reduction, r=1), thus 0<distance<1/sqrt(2) (=0.708)
 
 def get_model_for_problem_formulation(problem_formulation_id):
     function = DikeNetwork()
@@ -127,15 +130,28 @@ def get_model_for_problem_formulation(problem_formulation_id):
 
     # general
     if problem_formulation_id == 0:
-        constraints = []
         mins, maxs = 0, 0
+        constraints = []
         epsilons = []
         areas = nl_areas + de_areas
 
         outcomes = []
-        variable_name = []
-
         [outcomes.append(ScalarOutcome('{}_EAD'.format(a))) for a in areas]
+
+        variable_name = []
+        [variable_name.append('{}_Dike Inv Cost'.format(a)) for a in nl_areas]
+        variable_name.append('RfR Total Costs')
+
+        outcomes.append(ScalarOutcome('Investment Costs_nl',
+                                      variable_name=variable_name,
+                                      function=sum_over))
+
+        variable_name = []
+        [variable_name.append('{}_Dike Inv Cost'.format(a)) for a in de_areas]
+
+        outcomes.append(ScalarOutcome('Investment Costs_de',
+                                      variable_name=variable_name,
+                                      function=sum_over))
 
         for i in eooi:
             [outcomes.append(TimeSeriesOutcome('{}_{}'.format(output_list[i], n))
@@ -445,7 +461,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         epsilons.extend([0.05] * 5)
 
         mins = [0.0] * 7
-        maxs = [1.88 * 1e10, 1.71 * 1e9] + 5 * [0.708]  # 1/np.sqrt(2)
+        maxs = [1.88 * 1e10, 1.71 * 1e9] + 5 * [0.708]
 
         dike_model.outcomes = outcomes
         

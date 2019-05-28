@@ -35,7 +35,8 @@ class DikeNetwork(object):
         # # of events:
         n = 10
         R0 = pd.read_excel(
-            './data/pre_policies/zero_pol_wSB_n200_r35_{}.xlsx'.format(n), idnex_col=0)
+            './data/pre_policies/zero_pol_wSB_n200_r35_{}.xlsx'.format(n),
+            index_col=0)
         
         # maximum damage per dikering:
         maximaals = pd.read_excel('./data/damages/max_damages_dikerings.xlsx',
