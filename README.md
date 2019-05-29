@@ -25,4 +25,4 @@ Outputs in terms of expected annual damage relate to each of the dike ring area;
 ## Application:
 A previous version of the model, applied on a smaller scale case study, led to the following open-access publication:
 
-Ciullo, A., Karin M. de Bruijn, Jan H. Kwakkel and Frans Klijn (2019). *Accounting for the uncertain effects of hydraulic interactions in optimising embankments heights: Proof of principle for the IJssel River. Journal of Flood Risk Management, https://doi.org/10.1111/jfr3.12532
+Ciullo, A., Karin M. de Bruijn, Jan H. Kwakkel and Frans Klijn (2019). *Accounting for the uncertain effects of hydraulic interactions in optimising embankments heights: Proof of principle for the IJssel River*. Journal of Flood Risk Management, https://doi.org/10.1111/jfr3.12532
