@@ -27,7 +27,7 @@ def build_Pol(df, pf):
 if __name__ == '__main__':
     ema_logging.log_to_stderr(ema_logging.INFO)
 
-    pf = 2
+    pf = 0
 
     dike_model = get_model_for_problem_formulation(pf)[0]
         
@@ -44,9 +44,9 @@ if __name__ == '__main__':
     # No dike increase, none of the rfr project is selected, no damage
     # reduction:
     dike_increase = dict(zip((91, 101, 201, 301, 401, 501),
-                             (10, 10, 10, 10, 10, 10)))
+                             (0, 0, 0, 0, 0, 0)))
 
-    names = {'DikeIncrease': 0, 'rfr': 1,
+    names = {'DikeIncrease': 0, 'rfr': 0,
              '201.0': 0, '401.0': 0}
     ## zero policy:
     pol0 = {}

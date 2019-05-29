@@ -53,10 +53,8 @@ def get_network(Musk_params=True, fragcurves=True, Losses=True):
 
     # Upload rfr:
     rfr = pd.read_excel('./data/measures/RfR.xlsx', index_col=0)
-#    selection = np.loadtxt('./data/measures/RfR_selction.txt', dtype = str)
 
-#    rfr = rfr.loc[:, selection]
-    rfr.columns = range(rfr.shape[1])
+#    rfr.columns = range(rfr.shape[1])
 
     G.add_node('rfr', **to_dict_dropna(rfr))
     G.node['rfr']['type'] = 'measure'
