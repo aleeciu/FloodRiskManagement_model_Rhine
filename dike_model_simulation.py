@@ -62,7 +62,6 @@ if __name__ == '__main__':
 
     policy0 = Policy('Policy 0', **pol0)
 
-
 ## SIMULATION:
 ## single run
     start = time.time()
