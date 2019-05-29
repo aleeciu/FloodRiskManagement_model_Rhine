@@ -1,4 +1,4 @@
-# FloodRiskManagement_model_Rhine: ## A python-based flood risk assessment model for the lower Rhine River.
+# FloodRiskManagement_model_Rhine: A python-based flood risk assessment model for the lower Rhine River.
 ## What is the model for?
 The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.
 
