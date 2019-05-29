@@ -13,9 +13,10 @@ Outputs in terms of expected annual damage relate to each of the dike ring area;
 | ------------- |
 | *Figure 2: The modeling scheme*  |
 
-**The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.**
+### *The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization. *###
 
 ## Requirements:
+- pandas 0.24.2
 - ema_workbench and related dependencies: https://github.com/quaquel/EMAworkbench
 - SALib: https://github.com/SALib/SALib
 - Platypus: https://github.com/Project-Platypus/Platypus
