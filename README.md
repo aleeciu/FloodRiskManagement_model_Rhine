@@ -1,5 +1,8 @@
-# FloodRiskManagement_model_Rhine
-## A python-based flood risk assessment model for the lower Rhine River.
+# FloodRiskManagement_model_Rhine: A python-based flood risk assessment model for the lower Rhine River.
+## What is the model for?
+The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.
+
+## Brief description:
 The model allows estimating flood risk by exploring the effect of multiple risk reduction measures accounting for hydrological and dike breaching uncertainties. It is currently set up for the transboundary case of the Lower Rhine River (see in Figure 1), involving Germany and the Netherlands.
 
 |<img src="figs/Rhine.png" width="600"/>|
@@ -13,13 +16,13 @@ Outputs in terms of expected annual damage relate to each of the dike ring area;
 | ------------- |
 | *Figure 2: The modeling scheme*  |
 
-**The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.**
-
 ## Requirements:
+- pandas 0.24.2
 - ema_workbench and related dependencies: https://github.com/quaquel/EMAworkbench
 - SALib: https://github.com/SALib/SALib
 - Platypus: https://github.com/Project-Platypus/Platypus
 
 ## Application:
 A previous version of the model, applied on a smaller scale case study, led to the following open-access publication:
-Ciullo, A., Karin M. de Bruijn, Jan H. Kwakkel and Frans Klijn (2019). *Accounting for the uncertain effects of hydraulic interactions in optimising embankments heights: Proof of principle for the IJssel River. Journal of Flood Risk Management, https://doi.org/10.1111/jfr3.12532
+
+Ciullo, A., Karin M. de Bruijn, Jan H. Kwakkel and Frans Klijn (2019). *Accounting for the uncertain effects of hydraulic interactions in optimising embankments heights: Proof of principle for the IJssel River*. Journal of Flood Risk Management, https://doi.org/10.1111/jfr3.12532
