@@ -1,5 +1,8 @@
-# FloodRiskManagement_model_Rhine
-## A python-based flood risk assessment model for the lower Rhine River.
+# FloodRiskManagement_model_Rhine: ## A python-based flood risk assessment model for the lower Rhine River.
+## What is the model for?
+The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.
+
+## Brief description:
 The model allows estimating flood risk by exploring the effect of multiple risk reduction measures accounting for hydrological and dike breaching uncertainties. It is currently set up for the transboundary case of the Lower Rhine River (see in Figure 1), involving Germany and the Netherlands.
 
 |<img src="figs/Rhine.png" width="600"/>|
@@ -12,8 +15,6 @@ Outputs in terms of expected annual damage relate to each of the dike ring area;
 |<img src="figs/model_scheme.png" width="600"/>|
 | ------------- |
 | *Figure 2: The modeling scheme*  |
-
-### The model can be used (1) to assess the effect of uncertainties on flood risk through performing exploratory modeling and sensitivity analysis as well as (2) to find optimal combination of measures through many-objective optimization.
 
 ## Requirements:
 - pandas 0.24.2
