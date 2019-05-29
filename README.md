@@ -1,5 +1,4 @@
 # FloodRiskManagement_model_Rhine
-
 ## A python-based flood risk assessment model for the lower Rhine River.
 The model allows estimating flood risk by exploring the effect of multiple risk reduction measures by accounting for hydrological and dike breaching uncertainties. It is currently set up for the Lower Rhine River (see in Figure 1), involving Germany and Dutch territory.
 
