@@ -35,7 +35,7 @@ class DikeNetwork(object):
         # # of events:
         n = 10
         R0 = pd.read_excel(
-            './data/pre_policies/zero_pol_wSB_n200_r35_{}.xlsx'.format(n),
+            './data/pre_policies/zero_pol_wSB_n200_r35_{}_rings.xlsx'.format(n),
             index_col=0)
         
         # maximum damage per dikering:
@@ -73,7 +73,7 @@ class DikeNetwork(object):
         self.branches = branches
         self.upstream_node = upstream_node
         self.tree = tree
-
+        self.aggregation = True
         self.sb = True
         self.n = 200
         self.rate = 3.5  # discount rate
@@ -377,44 +377,58 @@ class DikeNetwork(object):
 
             for ring in rings:
                 area_output['{}_Dike Inv Cost'.format(area)].append(
-                    ring_output['{}_Dike Inv Cost'.format(ring)])
+                ring_output['{}_Dike Inv Cost'.format(ring)])
 
                 # german areas
                 if area in [4, 5]:
 
                     damage_in_ring = np.minimum(
-                                     self.maximaals.loc[str(ring)]['max_damage'],
-                                     np.nansum(ring_output['{}_Damage_de'.format(ring)], 
+                        self.maximaals.loc[str(ring)]['max_damage'],
+                        np.nansum(ring_output['{}_Damage_de'.format(ring)], 
                                                            axis=0))
-                    
+                        
+                    ring_output['{}_Damage'.format(ring)] = damage_in_ring
                     area_output['{}_Damage'.format(area)].append(damage_in_ring)
 
-            # dutch areas
+                    # dutch areas
                 else:
                     damage_in_ring = np.minimum(
-                                     self.maximaals.loc[str(ring)]['max_damage'],
-                                     np.nansum(ring_output['{}_Damage_nl'.format(ring)], 
+                            self.maximaals.loc[str(ring)]['max_damage'],
+                            np.nansum(ring_output['{}_Damage_nl'.format(ring)], 
                                                               axis=0))
-                    
+                        
+                    ring_output['{}_Damage'.format(ring)] = damage_in_ring                    
                     area_output['{}_Damage'.format(area)].append(damage_in_ring)
+
+
+                # Expected Annual Damage:
+                _damage = np.reshape(
+                ring_output['{}_Damage'.format(ring)], self.p_exc.shape)
+            
+                EAD = np.trapz(_damage, self.p_exc)
+                    
+                # Discounted annual risk per dike ring:
+                ring_output['{}_EAD'.format(ring)] = np.sum(discount(EAD,
+                                                    rate=self.rate, n=self.n))
+
 
             area_output['{}_Dike Inv Cost'.format(area)] = np.nansum(
                                 area_output['{}_Dike Inv Cost'.format(area)])
-            
+                
             area_output['{}_Damage'.format(area)] = np.nansum(area_output[
                                             '{}_Damage'.format(area)], axis=0)
                                 
             # Expected Annual Damage:
             _damage = np.reshape(
-                area_output['{}_Damage'.format(area)], self.p_exc.shape)
+                        area_output['{}_Damage'.format(area)], self.p_exc.shape)
             
             EAD = np.trapz(_damage, self.p_exc)
             # Discounted annual risk per dike ring:
             area_output['{}_EAD'.format(area)] = np.sum(discount(EAD,
                                                     rate=self.rate, n=self.n))
             
-#        area_output.update(extra_output)
-
+#       area_output.update(extra_output)
+        area_output.update(ring_output)
         area_output.update({'RfR Total Costs': G.node['rfr']['totcost']})
-
+            
         return area_output

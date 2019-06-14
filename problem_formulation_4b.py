@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 24 11:18:24 2019
+Created on Fri Jun 14 15:26:31 2019
 
 @author: ciullo
 """
+
 
 from dike_model_function import DikeNetwork  # @UnresolvedImport
 from ema_workbench import (Model, TimeSeriesOutcome, ScalarOutcome,
@@ -35,8 +36,8 @@ def absolute_risk(init_risk, *args):
     return ratio
 
 def risk_shift_distance(init_risks, *args):
-    r1 = (init_risks[0] - args[0]) / init_risks[0]
-    r2 = (init_risks[1] - args[1]) / init_risks[1]
+    r1 = (init_risks[0] - args[0]) / init_risks[0]+0.00001
+    r2 = (init_risks[1] - args[1]) / init_risks[1]+0.00001
 
     distance = abs(r1 - r2) / np.sqrt(2)
     return distance
@@ -46,8 +47,8 @@ def max_risk_shift_distance(init_risks, *args):
     distance = []
     for comb in combinations(range(len(init_risks)),2):
         a1, a2 = comb
-        r1 = (init_risks[a1] - args[a1]) / init_risks[a1]
-        r2 = (init_risks[a2] - args[a2]) / init_risks[a2]
+        r1 = (init_risks[a1] - args[a1]) / (init_risks[a1]+0.0001)
+        r2 = (init_risks[a2] - args[a2]) / (init_risks[a2]+0.0001)
 
         # distance from the r1 = r2 line
         distance.append(abs(r1 - r2) / np.sqrt(2))
@@ -123,7 +124,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
 
     nl_areas = list(range(4))
     de_areas = [4, 5]
-
+    dikerings = np.unique(DikeNetwork().tree.dikering.T)
 #    nl_max_costs = 2 * 1e8
 
     risk_keys = {0: 'minR', 1: 'EAD', 2: 'maxR'}
@@ -139,7 +140,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes = []
         variable_name = []
 
-        [outcomes.append(ScalarOutcome('{}_{}'.format(a, ri))) for a in areas]
+        [outcomes.append(ScalarOutcome('{}_{}'.format(r, ri))) for r in dikerings]
 
         for i in eooi:
             [outcomes.append(TimeSeriesOutcome('{}_{}'.format(output_list[i], n))
@@ -330,15 +331,15 @@ def get_model_for_problem_formulation(problem_formulation_id):
         init_risks = function.R0.values[0]
         variable_name = []
         
-        for a in nl_areas+de_areas:
-            variable_name.append('{}_{}'.format(a, ri))
+        for r in dikerings:
+            variable_name.append('{}_{}'.format(r, ri))
 
-            outcomes.append(ScalarOutcome('{}_EAD'.format(a),
-                                          variable_name=['{}_EAD'.format(a)]))
+            outcomes.append(ScalarOutcome('{}_EAD'.format(r),
+                                          variable_name=['{}_EAD'.format(r)]))
 
             # when x is positive, the function gives 0, the constraint is met
-            constraints.append(Constraint('{}_EAD'.format(a),
-                                          outcome_names='{}_EAD'.format(a),
+            constraints.append(Constraint('{}_EAD'.format(r),
+                                          outcome_names='{}_EAD'.format(r),
                                           function=lambda x: max(0, -x)))
 
         outcomes.append(ScalarOutcome('max_distance',

@@ -13,7 +13,7 @@ from ema_workbench.util import ema_logging
 import pickle
 import time
 import pandas as pd
-from problem_formulation_4 import get_model_for_problem_formulation
+from problem_formulation_4b import get_model_for_problem_formulation
 
 
 def build_Pol(df, pf):
@@ -27,7 +27,7 @@ def build_Pol(df, pf):
 if __name__ == '__main__':
     ema_logging.log_to_stderr(ema_logging.INFO)
 
-    pf = 0
+    pf = '2b'
 
     dike_model = get_model_for_problem_formulation(pf)[0]
         
@@ -81,3 +81,11 @@ if __name__ == '__main__':
 #### save results
 #    with open("./results//FirstDecentResults/simulation_noncooppolsx100.p".format(pf), "wb") as f:
 #            pickle.dump(results, f)
+    
+    
+    
+    
+    
+    
+    
+
