@@ -26,8 +26,7 @@ def relative_risk(init_risk, *args):
 
     return ratio
 
-def absolute_risk(init_risk, *args):
-    # only show relative risk change of each location
+def risk_diff(init_risk, *args):
 
     EADa0 = init_risk
     EADa1 = args[0]
@@ -36,8 +35,8 @@ def absolute_risk(init_risk, *args):
     return ratio
 
 def risk_shift_distance(init_risks, *args):
-    r1 = (init_risks[0] - args[0]) / init_risks[0]+0.00001
-    r2 = (init_risks[1] - args[1]) / init_risks[1]+0.00001
+    r1 = (init_risks[0] - args[0]) / (init_risks[0]+0.00001)
+    r2 = (init_risks[1] - args[1]) / (init_risks[1]+0.00001)
 
     distance = abs(r1 - r2) / np.sqrt(2)
     return distance
@@ -47,11 +46,15 @@ def max_risk_shift_distance(init_risks, *args):
     distance = []
     for comb in combinations(range(len(init_risks)),2):
         a1, a2 = comb
-        r1 = (init_risks[a1] - args[a1]) / (init_risks[a1]+0.0001)
-        r2 = (init_risks[a2] - args[a2]) / (init_risks[a2]+0.0001)
+        # if both areas have initinial risk higher than zero 
+        if not (init_risks[a1]*init_risks[a2] == 0): 
+            r1 = (init_risks[a1] - args[a1]) / (init_risks[a1])
+            r2 = (init_risks[a2] - args[a2]) / (init_risks[a2])
 
-        # distance from the r1 = r2 line
-        distance.append(abs(r1 - r2) / np.sqrt(2))
+            # distance from the r1 = r2 line
+            distance.append(abs(r1 - r2) / np.sqrt(2))
+        else:
+            distance.append(0)
     return np.max(distance)
 
 #def max_risk_shift_distance(init_risks, *args):
@@ -135,8 +138,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         constraints = []
         mins, maxs = 0, 0
         epsilons = []
-        areas = nl_areas + de_areas
-
+        
         outcomes = []
         variable_name = []
 
@@ -173,7 +175,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_nl',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e9)
+        epsilons.append(1e7)
 
         variable_name = []
         for e in ['{}'.format(ri), 'Dike Inv Cost']:
@@ -182,7 +184,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_de',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e8)
+        epsilons.append(1e7)
 
         mins = [0.0] * 2
         maxs = [1.9 * 1e10, 2.16 * 1e9]
@@ -214,7 +216,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_nl',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e9)
+        epsilons.append(1e7)
 
         variable_name = []
         for e in ['{}'.format(ri), 'Dike Inv Cost']:
@@ -223,7 +225,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_de',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e8)
+        epsilons.append(1e7)
 
 
         init_risks = []
@@ -316,7 +318,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_nl',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e9)
+        epsilons.append(1e7)
 
         variable_name = []
         for e in ['{}'.format(ri), 'Dike Inv Cost']:
@@ -325,25 +327,31 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs_de',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e8)
+        epsilons.append(1e7)
 
 
-        init_risks = function.R0.values[0]
+        init_risks = function.R0
         variable_name = []
         
         for r in dikerings:
             variable_name.append('{}_{}'.format(r, ri))
 
-            outcomes.append(ScalarOutcome('{}_EAD'.format(r),
-                                          variable_name=['{}_EAD'.format(r)]))
+            outcomes.append(ScalarOutcome('{}_EADred'.format(r),
+                            variable_name=['{}_EAD'.format(r)],
+                            function=partial(risk_diff, 
+                                             init_risks['{}_EAD'.format(r)].values[0])))
+
+#            outcomes.append(ScalarOutcome('{}_EAD'.format(r),
+#                            variable_name=['{}_EAD'.format(r)]))
 
             # when x is positive, the function gives 0, the constraint is met
-            constraints.append(Constraint('{}_EAD'.format(r),
-                                          outcome_names='{}_EAD'.format(r),
+            constraints.append(Constraint('{}_EADred'.format(r),
+                                          outcome_names='{}_EADred'.format(r),
                                           function=lambda x: max(0, -x)))
 
         outcomes.append(ScalarOutcome('max_distance',
-                        function=partial(max_risk_shift_distance, init_risks),
+                        function=partial(max_risk_shift_distance, 
+                                         init_risks.values[0]),
                         variable_name=variable_name, kind=direction))
 
 #        outcomes.append(ScalarOutcome('{}_u'.format(a),
@@ -387,35 +395,32 @@ def get_model_for_problem_formulation(problem_formulation_id):
         outcomes.append(ScalarOutcome('Total Costs',
                                       variable_name=variable_name,
                                       function=sum_over, kind=direction))
-        epsilons.append(1e9)
+        epsilons.append(1e7)
 
 
-        init_risks = function.R0.values[0]
+        init_risks = function.R0
         variable_name = []
         
-        for a in nl_areas+de_areas:
-            variable_name.append('{}_{}'.format(a, ri))
+        for r in dikerings:
+            variable_name.append('{}_{}'.format(r, ri))
 
-            outcomes.append(ScalarOutcome('{}_EAD'.format(a),
-                                          variable_name=['{}_EAD'.format(a)]))
+            outcomes.append(ScalarOutcome('{}_EADred'.format(r),
+                            variable_name=['{}_EAD'.format(r)],
+                            function=partial(risk_diff, 
+                                             init_risks['{}_EAD'.format(r)].values[0])))
+
+#            outcomes.append(ScalarOutcome('{}_EAD'.format(r),
+#                            variable_name=['{}_EAD'.format(r)]))
 
             # when x is positive, the function gives 0, the constraint is met
-            constraints.append(Constraint('{}_EAD'.format(a),
-                                          outcome_names='{}_EAD'.format(a),
+            constraints.append(Constraint('{}_EADred'.format(r),
+                                          outcome_names='{}_EADred'.format(r),
                                           function=lambda x: max(0, -x)))
 
         outcomes.append(ScalarOutcome('max_distance',
-                        function=partial(max_risk_shift_distance, init_risks),
+                        function=partial(max_risk_shift_distance, 
+                                         init_risks.values[0]),
                         variable_name=variable_name, kind=direction))
-
-#        outcomes.append(ScalarOutcome('{}_u'.format(a),
-#                        function=partial(relative_risk, init_risk[0]),
-#                                          variable_name=[variable_name[0]]))
-#
-#        # when x is positive, the function gives 0, the constraint is met
-#        constraints.append(Constraint('{}_u'.format(a),
-#                                          outcome_names='{}_u'.format(a),
-#                                          function=lambda x: max(0, -x)))
 
         epsilons.extend([0.05] * 5)
 
@@ -430,19 +435,51 @@ def get_model_for_problem_formulation(problem_formulation_id):
         epsilons = []
         outcomes = []
 
-        outcomes.append(ScalarOutcome('RfR Total Costs'))
+        variable_name = []
 
-        for a in nl_areas+de_areas:
-            outcomes.append(ScalarOutcome('{}_Dike Inv Cost'.format(a)))
-            outcomes.append(ScalarOutcome('{}_EAD'.format(a)))
+        for e in [ri, 'Dike Inv Cost']:
+            if e not in ['Dike Inv Cost']:
+                for r in dikerings:
+                    outcomes.append(ScalarOutcome('{}_{}'.format(r, e)))
+                    
+            variable_name.extend('{}_{}'.format(a, e) for a in nl_areas)
+        variable_name.append('RfR Total Costs')
 
-        init_risks = function.R0.values[0]                
-        for comb in combinations(range(len(nl_areas+de_areas)),2):
+        outcomes.append(ScalarOutcome('Total Costs_nl',
+                                      variable_name=variable_name,
+                                      function=sum_over, kind=direction))
+
+        variable_name = []
+        for e in ['{}'.format(ri), 'Dike Inv Cost']:    
+            variable_name.extend('{}_{}'.format(a, e) for a in de_areas)
+        outcomes.append(ScalarOutcome('Total Costs_de',
+                                      variable_name=variable_name,
+                                      function=sum_over, kind=direction))
+
+#        for e in ['EAD', 'Dike Inv Cost']:
+#            for r in dikerings:
+#                outcomes.append(ScalarOutcome('{}_{}'.format(r, e)))
+#                variable_name.extend(['{}_{}'.format(r, e)])
+#        variable_name.append('RfR Total Costs')
+#
+#        outcomes.append(ScalarOutcome('Total Costs',
+#                                      variable_name=variable_name,
+#                                      function=sum_over, kind=direction))
+
+#        outcomes.append(ScalarOutcome('RfR Total Costs'))
+
+#        for r in dikerings:
+#            outcomes.append(ScalarOutcome('{}_Dike Inv Cost'.format(r)))
+#            outcomes.append(ScalarOutcome('{}_EAD'.format(r)))
+
+        init_risks = function.R0.values[0]            
+        for comb in combinations(range(len(init_risks)),2):
             a1, a2 = comb
-            outcomes.append(ScalarOutcome('{}_{}_distance'.format(a1,a2),
+            n1, n2 = dikerings[a1], dikerings[a2]
+            outcomes.append(ScalarOutcome('{}_{}_distance'.format(n1,n2),
                         function=partial(risk_shift_distance, 
                                          init_risks[[a1,a2]]),
-                        variable_name=['{}_EAD'.format(a1), '{}_EAD'.format(a2)],
+                        variable_name=['{}_EAD'.format(n1), '{}_EAD'.format(n2)],
                         kind=direction))
                         
 #        variable_name = []
@@ -490,6 +527,7 @@ def get_model_for_problem_formulation(problem_formulation_id):
 
         dike_model.outcomes = outcomes
         mins, maxs = [0,0]
+
     else:
-        raise TypeError('unknonw identifier')
+        raise TypeError('unknonw problem formulation')
     return dike_model, epsilons, (mins, maxs), constraints

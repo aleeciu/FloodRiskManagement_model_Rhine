@@ -68,9 +68,9 @@ if __name__ == '__main__':
 #    policies.extend(build_Pol(df, 'pf1'))
 
 ## pf2
-#    df = pd.read_excel('./results_pf1_100000nfe_NSB1e6_0.xlsx'
-#                       )[[l.name for l in dike_model.levers]]
-#    policies.extend(build_Pol(df, 'pf2'))
+    df = pd.read_excel('./results_pf1_100000nfe_NSB1e6_0.xlsx'
+                       )[[l.name for l in dike_model.levers]]
+    policies.extend(build_Pol(df, 'pf2'))
 #
 #### pf3
 #    df = pd.read_excel('./results_pf3_100000nfe.xlsx'
@@ -81,11 +81,11 @@ if __name__ == '__main__':
 
 ## SIMULATION:
 ## single run
-#    start = time.time()
-#    dike_model.run_model(ref_scenario, policies[1])
-#    end = time.time() - start
-#    print(end)
-#    results = dike_model.outcomes_output
+    start = time.time()
+    dike_model.run_model(ref_scenario, policies[1])
+    end = time.time() - start
+    print(end)
+    results = dike_model.outcomes_output
 
 ##     series run
 #    with SequentialEvaluator(dike_model) as evaluator:

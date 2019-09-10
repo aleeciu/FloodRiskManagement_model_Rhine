@@ -164,7 +164,6 @@ class DikeNetwork(object):
         area_output = {'{}_{}'.format(a, key): [] for key in [
                        'Damage', 'Deaths', 'EAD', 'Dike Inv Cost'] for a in range(6)}
 
-    
 #        # Possible extra outputs of interest:
 #        extra_output_list = ['Qpol', 'Qout', 'Qin', 'wl', 'status', 'critWL']
 #        # Selected extra outputs of interest
