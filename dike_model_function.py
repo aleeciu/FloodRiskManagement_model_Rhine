@@ -73,7 +73,7 @@ class DikeNetwork(object):
         self.branches = branches
         self.upstream_node = upstream_node
         self.tree = tree
-        self.sb = False
+        self.sb = True
         self.n = 200
         self.rate = 3.5  # discount rate
         self.step = 10  # dike increase step [cm]
@@ -97,7 +97,7 @@ class DikeNetwork(object):
 
             # Initialize ooi:
             node['losses_{}'.format(country)] = []
-            node['deaths_{}'.format(country)] = []
+#            node['deaths_{}'.format(country)] = []
         G.node['rfr']['totcost'] = 0
         return G
 
@@ -158,11 +158,11 @@ class DikeNetwork(object):
 
         # Dictionary storing outputs:
         ring_output = {'{}_{}'.format(dr, key): [] for key in [
-                       'Damage_de', 'Damage_nl', 'Deaths_de', 'Deaths_nl', 'Dike Inv Cost'
+                       'Damage_de', 'Damage_nl', 'Dike Inv Cost'
                        ] for dr in np.unique(tree['dikering'])}
 
         area_output = {'{}_{}'.format(a, key): [] for key in [
-                       'Damage', 'Deaths', 'EAD', 'Dike Inv Cost'] for a in range(6)}
+                       'Damage', 'EAD', 'Dike Inv Cost'] for a in range(6)}
 
     
 #        # Possible extra outputs of interest:
@@ -319,7 +319,7 @@ class DikeNetwork(object):
                              3, 1, [np.max(node['wl'])]) * node['status'][-1])
 
 #                node['deaths_nl'].append(Lookuplin(node['table_nl'],
-#                        3, 2, np.max(node['wl']))*node['status'][-1])
+#                             3, 2, [np.max(node['wl'])]) * node['status'][-1])
 
                 # if you are on a transb. dikering, then you also have damage
                 # in DE
@@ -328,7 +328,7 @@ class DikeNetwork(object):
                          3, 1, [np.max(node['wl'])]) * node['status'][-1])
 
 #                    node['deaths_de'].append(Lookuplin(node['table_de'],
-#                         3, 2, np.max(node['wl']))*node['status'][-1])
+#                         3, 2, [np.max(node['wl'])]) * node['status'][-1])
 
                 ## Extra outcomes of interest:                    
 #                for k in eooi:
@@ -427,7 +427,7 @@ class DikeNetwork(object):
             area_output['{}_EAD'.format(area)] = np.sum(discount(EAD,
                                                     rate=self.rate, n=self.n))
             
-#       area_output.update(extra_output)
+#        area_output.update(extra_output)
         area_output.update(ring_output)
         area_output.update({'RfR Total Costs': G.node['rfr']['totcost']})
             
